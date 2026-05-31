@@ -114,14 +114,6 @@
             padding: 50px;
             color: #888;
         }
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #555;
-            font-size: 0.8rem;
-        }
-        a { color: var(--green); text-decoration: none; }
-        a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -188,13 +180,14 @@
         const statusLabel = { buy: "Buy Now", accumulate: "Accumulate", wait: "Wait" };
         const statusClass = { buy: "buy", accumulate: "accumulate", wait: "wait" };
 
-        // ==================== FETCH LIVE DATA ====================
+        // ==================== FETCH LIVE DATA (CORS-PROXY) ====================
         async function fetchQuotes() {
             const symbols = stocks.map(s => s.ticker + ".NS").join(",");
-            const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`;
-            
+            const yahooUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`;
+            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(yahooUrl)}`;
+
             try {
-                const response = await fetch(url);
+                const response = await fetch(proxyUrl);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
                 return data.quoteResponse.result;
@@ -212,7 +205,6 @@
                 return;
             }
 
-            // Create a map from symbol to quote
             const quoteMap = {};
             quotes.forEach(q => {
                 quoteMap[q.symbol.replace(".NS", "")] = q;
