@@ -184,7 +184,8 @@
         async function fetchQuotes() {
             const symbols = stocks.map(s => s.ticker + ".NS").join(",");
             const yahooUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`;
-            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(yahooUrl)}`;
+            // Use corsproxy.io (free, no key, reliable)
+            const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(yahooUrl)}`;
 
             try {
                 const response = await fetch(proxyUrl);
