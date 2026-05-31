@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master Golden Portfolio – Live Dashboard</title>
+    <title>Bhaiya Golden Portfolio – Live Analysis</title>
     <style>
         :root {
             --bg: #0B0F19;
@@ -14,62 +14,40 @@
             --gold: #FFD700;
             --red: #ff5555;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin:0; padding:0; box-sizing:border-box; }
         body {
-            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background: var(--bg);
             color: var(--text);
             line-height: 1.5;
             min-height: 100vh;
+            padding: 20px;
         }
-        .container { max-width: 1400px; margin: 0 auto; padding: 30px 20px; }
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--green);
-            margin-bottom: 5px;
-        }
-        .subtitle {
-            color: #888;
-            font-size: 1rem;
-        }
-        .status-bar {
+        .container { max-width: 1500px; margin: auto; }
+        header { text-align: center; margin: 20px 0 30px; }
+        h1 { font-size: 2.4rem; font-weight: 800; color: var(--green); }
+        .subtitle { color: #999; font-size: 1rem; }
+        .status-panel {
             display: flex;
             justify-content: center;
-            gap: 25px;
+            align-items: center;
+            gap: 20px;
             margin-bottom: 25px;
             font-size: 0.9rem;
             color: #aaa;
         }
-        .status-bar span {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .indicator {
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            background: var(--green);
-        }
-        .indicator.error { background: var(--red); }
-        .table-wrapper {
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); }
+        .dot.error { background: var(--red); }
+        .table-container {
             overflow-x: auto;
-            border-radius: 12px;
+            border-radius: 16px;
             border: 1px solid var(--border);
             background: var(--card);
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
         th {
             background: #0d1117;
-            padding: 14px 12px;
+            padding: 14px 10px;
             text-align: left;
             color: var(--gold);
             font-weight: 600;
@@ -77,204 +55,180 @@
             white-space: nowrap;
         }
         td {
-            padding: 12px;
+            padding: 10px;
             border-bottom: 1px solid var(--border);
             white-space: nowrap;
         }
-        tr:hover td {
-            background: rgba(255,255,255,0.03);
+        tr:hover td { background: rgba(255,255,255,0.04); }
+        .price { font-weight: 700; }
+        .checks {
+            display: flex;
+            gap: 4px;
+            font-size: 1rem;
         }
-        .price { font-weight: 700; font-size: 1.05rem; }
-        .change.positive { color: var(--green); }
-        .change.negative { color: var(--red); }
-        .status-badge {
+        .checks span { opacity: 0.3; }
+        .checks span.pass { opacity: 1; }
+        .badge {
             display: inline-block;
-            padding: 3px 10px;
+            padding: 2px 8px;
             border-radius: 4px;
+            font-size: 0.75rem;
             font-weight: 600;
-            font-size: 0.8rem;
             text-transform: uppercase;
         }
         .buy { background: var(--green); color: var(--bg); }
         .accumulate { background: var(--gold); color: var(--bg); }
         .wait { background: #ff8800; color: #fff; }
-        .last-updated {
-            text-align: center;
-            margin-top: 20px;
-            color: #666;
-            font-size: 0.85rem;
-        }
-        .error-message {
-            text-align: center;
-            padding: 50px;
-            color: var(--red);
-        }
-        .loading {
-            text-align: center;
-            padding: 50px;
-            color: #888;
-        }
+        .footer { text-align: center; margin-top: 30px; color: #555; font-size: 0.8rem; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Master Golden Portfolio</h1>
-            <div class="subtitle">Live Dashboard — Siddhartha Bhaiya Framework</div>
-        </header>
-
-        <div class="status-bar">
-            <span><span class="indicator" id="statusDot"></span> <span id="statusText">Connecting…</span></span>
-            <span>🕒 <span id="lastRefresh">--</span></span>
-            <span>📊 19 Stocks</span>
-        </div>
-
-        <div class="table-wrapper">
-            <table id="stockTable">
-                <thead>
-                    <tr>
-                        <th>Company</th>
-                        <th>Ticker</th>
-                        <th>Live Price</th>
-                        <th>Change %</th>
-                        <th>Market Cap (Cr)</th>
-                        <th>P/E</th>
-                        <th>ROCE %</th>
-                        <th>D/E</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    <tr><td colspan="9" class="loading">Loading live data…</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="last-updated" id="lastUpdatedText">Last refreshed: --</div>
+<div class="container">
+    <header>
+        <h1>🔱 Siddhartha Bhaiya Golden Portfolio</h1>
+        <div class="subtitle">Live prices + 5‑Check Quality Framework (Market Leader · ROCE >20% · Debt‑free · Promoter >50% · Valuation OK)</div>
+    </header>
+    <div class="status-panel">
+        <span><span class="dot" id="statusDot"></span> <span id="statusText">Connecting…</span></span>
+        <span>🕒 <span id="lastUpdate">--</span></span>
+        <span>📊 19 stocks</span>
     </div>
+    <div class="table-container">
+        <table id="mainTable">
+            <thead>
+                <tr>
+                    <th>Company</th>
+                    <th>Live Price</th>
+                    <th>Chg%</th>
+                    <th>Mkt Cap (₹Cr)</th>
+                    <th>P/E</th>
+                    <th>ROCE%</th>
+                    <th>D/E</th>
+                    <th>Promoter%</th>
+                    <th>5 Checks</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+        </table>
+    </div>
+    <div class="footer">✔️ passes Bhaiya filter  ✖️ fails  ·  ✓ = passing check  ·  Data via Yahoo Finance</div>
+</div>
 
-    <script>
-        // ==================== STOCK DATA ====================
-        const stocks = [
-            { ticker: "KOTHARIPET", name: "Kothari Petrochemicals", status: "buy", roce: 28.6, de: 0.01 },
-            { ticker: "PANAMAPET", name: "Panama Petrochem", status: "buy", roce: 20.4, de: 0.02 },
-            { ticker: "EXPLEOSOL", name: "Expleo Solutions", status: "buy", roce: 24.8, de: 0 },
-            { ticker: "ACCELYA", name: "Accelya Solutions", status: "buy", roce: 53.6, de: 0 },
-            { ticker: "PETRONET", name: "Petronet LNG", status: "buy", roce: 22.7, de: 0.16 },
-            { ticker: "BAJAJST", name: "Bajaj Steel Industries", status: "accumulate", roce: 29, de: 0.12 },
-            { ticker: "TIIL", name: "Technocraft Industries", status: "accumulate", roce: 19.4, de: 0.34 },
-            { ticker: "SANGHVIMOV", name: "Sanghvi Movers", status: "accumulate", roce: 16.7, de: 0.39 },
-            { ticker: "SHARDAMOTR", name: "Sharda Motor", status: "wait", roce: 36, de: 0 },
-            { ticker: "INDIAMART", name: "IndiaMart Intermesh", status: "wait", roce: 28, de: 0 },
-            { ticker: "BECTORFOOD", name: "Mrs. Bectors Food", status: "wait", roce: 20, de: 0 },
-            { ticker: "KOVAI", name: "Kovai Medical Center", status: "wait", roce: 22.2, de: 0.35 },
-            { ticker: "SHARDACROP", name: "Sharda Cropchem", status: "wait", roce: 30.4, de: 0 },
-            { ticker: "MPSLTD", name: "MPS Ltd", status: "wait", roce: 39.3, de: 0.06 },
-            { ticker: "DHANUKA", name: "Dhanuka Agritech", status: "wait", roce: 24, de: 0 },
-            { ticker: "MAMATA", name: "Mamata Machinery", status: "wait", roce: 34.9, de: 0 },
-            { ticker: "EPL", name: "EPL Ltd", status: "wait", roce: 17.8, de: 0.34 },
-            { ticker: "GAEL", name: "Gujarat Ambuja Exports", status: "wait", roce: 12.5, de: 0.07 },
-            { ticker: "MAYURUNIQ", name: "Mayur Uniquoters", status: "wait", roce: 25, de: 0 }
-        ];
+<script>
+// ================== FULL BHAIYA DATA ==================
+const stocks = [
+  { ticker:"KOTHARIPET", name:"Kothari Petrochemicals", roce:28.6, de:0.01, promoter:72.2, leader:true, valuationOK:true, moat:"India's only PIB maker", status:"buy" },
+  { ticker:"PANAMAPET", name:"Panama Petrochem", roce:20.4, de:0.02, promoter:63.2, leader:true, valuationOK:true, moat:"Pharma-grade oils, regulatory lock-in", status:"buy" },
+  { ticker:"EXPLEOSOL", name:"Expleo Solutions", roce:24.8, de:0.0, promoter:71.1, leader:true, valuationOK:true, moat:"BFSI testing; deep switching costs", status:"buy" },
+  { ticker:"ACCELYA", name:"Accelya Solutions", roce:53.6, de:0.0, promoter:74.7, leader:true, valuationOK:true, moat:"Airline SaaS monopoly", status:"buy" },
+  { ticker:"PETRONET", name:"Petronet LNG", roce:22.7, de:0.16, promoter:50.0, leader:true, valuationOK:true, moat:"LNG import toll-booth", status:"buy" },
+  { ticker:"BAJAJST", name:"Bajaj Steel Industries", roce:29.0, de:0.12, promoter:56.6, leader:true, valuationOK:false, moat:"Cotton ginning monopoly (60% share)", status:"accumulate" },
+  { ticker:"TIIL", name:"Technocraft Industries", roce:19.4, de:0.34, promoter:74.8, leader:true, valuationOK:false, moat:"Global drum closure leader", status:"accumulate" },
+  { ticker:"SANGHVIMOV", name:"Sanghvi Movers", roce:16.7, de:0.39, promoter:45.0, leader:true, valuationOK:false, moat:"Asia's largest crane rental", status:"accumulate" },
+  { ticker:"SHARDAMOTR", name:"Sharda Motor", roce:36.0, de:0.0, promoter:64.3, leader:true, valuationOK:false, moat:"Exhaust systems; 94% FCF conversion", status:"wait" },
+  { ticker:"INDIAMART", name:"IndiaMart Intermesh", roce:28.0, de:0.0, promoter:49.1, leader:true, valuationOK:false, moat:"B2B network monopoly", status:"wait" },
+  { ticker:"BECTORFOOD", name:"Mrs. Bectors Food", roce:20.0, de:0.0, promoter:51.0, leader:true, valuationOK:false, moat:"Premium biscuits + QSR supplier", status:"wait" },
+  { ticker:"KOVAI", name:"Kovai Medical Center", roce:22.2, de:0.35, promoter:56.5, leader:true, valuationOK:false, moat:"Regional hospital monopoly", status:"wait" },
+  { ticker:"SHARDACROP", name:"Sharda Cropchem", roce:30.4, de:0.0, promoter:74.8, leader:true, valuationOK:false, moat:"Registration IP moat (80 countries)", status:"wait" },
+  { ticker:"MPSLTD", name:"MPS Ltd", roce:39.3, de:0.06, promoter:68.3, leader:true, valuationOK:false, moat:"Embedded in academic publishing", status:"wait" },
+  { ticker:"DHANUKA", name:"Dhanuka Agritech", roce:24.0, de:0.0, promoter:69.7, leader:true, valuationOK:false, moat:"10,000-dealer distribution moat", status:"wait" },
+  { ticker:"MAMATA", name:"Mamata Machinery", roce:34.9, de:0.0, promoter:62.5, leader:true, valuationOK:false, moat:"Global top-5 packaging machines", status:"wait" },
+  { ticker:"EPL", name:"EPL Ltd", roce:17.8, de:0.34, promoter:52.0, leader:true, valuationOK:false, moat:"World #1 laminated tubes", status:"wait" },
+  { ticker:"GAEL", name:"Gujarat Ambuja Exports", roce:12.5, de:0.07, promoter:63.8, leader:true, valuationOK:false, moat:"Largest corn starch processor", status:"wait" },
+  { ticker:"MAYURUNIQ", name:"Mayur Uniquoters", roce:25.0, de:0.0, promoter:60.0, leader:true, valuationOK:false, moat:"Synthetic leather for luxury OEMs", status:"wait" }
+];
 
-        const statusLabel = { buy: "Buy Now", accumulate: "Accumulate", wait: "Wait" };
-        const statusClass = { buy: "buy", accumulate: "accumulate", wait: "wait" };
+const statusLabel = {buy:"Buy Now", accumulate:"Accumulate", wait:"Wait"};
+const statusClass = {buy:"buy", accumulate:"accumulate", wait:"wait"};
 
-        // ==================== FETCH LIVE DATA (CORS-PROXY) ====================
-        async function fetchQuotes() {
-            const symbols = stocks.map(s => s.ticker + ".NS").join(",");
-            const yahooUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`;
-            // Use corsproxy.io (free, no key, reliable)
-            const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(yahooUrl)}`;
-
-            try {
-                const response = await fetch(proxyUrl);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const data = await response.json();
-                return data.quoteResponse.result;
-            } catch (err) {
-                console.error("Fetch error:", err);
-                return null;
-            }
+// ================== LIVE PRICE (VIA CORS PROXY) ==================
+async function fetchQuotes() {
+    const symbols = stocks.map(s=>s.ticker+".NS").join(",");
+    const yahooUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`;
+    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(yahooUrl)}`;
+    try {
+        const resp = await fetch(proxyUrl, {signal:AbortSignal.timeout(8000)});
+        if (!resp.ok) throw new Error("proxy fail");
+        const data = await resp.json();
+        return data.quoteResponse.result;
+    } catch (e) {
+        console.warn("Proxy failed, trying backup proxy");
+        try {
+            const backupUrl = `https://corsproxy.io/?${encodeURIComponent(yahooUrl)}`;
+            const resp2 = await fetch(backupUrl, {signal:AbortSignal.timeout(8000)});
+            if (!resp2.ok) throw new Error("backup fail");
+            const data2 = await resp2.json();
+            return data2.quoteResponse.result;
+        } catch (e2) {
+            return null;
         }
+    }
+}
 
-        // ==================== RENDER TABLE ====================
-        function renderTable(quotes) {
-            const tbody = document.getElementById("tableBody");
-            if (!quotes) {
-                tbody.innerHTML = '<tr><td colspan="9" class="error-message">⚠️ Failed to fetch live data. Retrying…</td></tr>';
-                return;
-            }
+// ================== RENDER TABLE ==================
+function renderTable(quotes) {
+    const tbody = document.getElementById("tbody");
+    if (!quotes) {
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--red);padding:30px;">⚠️ Live data temporarily unavailable. Retrying in 60s…</td></tr>';
+        return;
+    }
+    const map = {};
+    quotes.forEach(q => map[q.symbol.replace(".NS","")] = q);
 
-            const quoteMap = {};
-            quotes.forEach(q => {
-                quoteMap[q.symbol.replace(".NS", "")] = q;
-            });
+    let html = "";
+    stocks.forEach(stock => {
+        const q = map[stock.ticker];
+        const price = q?.regularMarketPrice;
+        const chgPct = q?.regularMarketChangePercent;
+        const mcap = q?.marketCap;
+        const pe = q?.trailingPE;
 
-            let html = "";
-            stocks.forEach(stock => {
-                const q = quoteMap[stock.ticker];
-                if (!q) {
-                    html += `<tr>
-                        <td>${stock.name}</td>
-                        <td>${stock.ticker}</td>
-                        <td colspan="7" style="color:#888;">Data unavailable</td>
-                    </tr>`;
-                    return;
-                }
+        // Bhaiya 5 checks
+        const leaderCheck = stock.leader ? "✓" : "✗";
+        const roceCheck = stock.roce >= 20 ? "✓" : "✗";
+        const debtCheck = stock.de <= 0.5 ? "✓" : "✗";
+        const promoCheck = stock.promoter >= 50 ? "✓" : "✗";
+        const valCheck = stock.valuationOK ? "✓" : "✗";
 
-                const price = q.regularMarketPrice;
-                const changePercent = q.regularMarketChangePercent;
-                const marketCapCr = q.marketCap ? (q.marketCap / 10000000).toFixed(0) : "--";
-                const pe = q.trailingPE ? q.trailingPE.toFixed(1) : "--";
-                const changeClass = changePercent >= 0 ? "positive" : "negative";
-                const changeSign = changePercent >= 0 ? "+" : "";
+        const checksHTML = `<span class="checks">
+            <span class="${stock.leader?'pass':''}" title="Market Leader">🏭</span>
+            <span class="${stock.roce>=20?'pass':''}" title="ROCE>20%">📈</span>
+            <span class="${stock.de<=0.5?'pass':''}" title="Debt<0.5">🛡️</span>
+            <span class="${stock.promoter>=50?'pass':''}" title="Promoter>50%">👤</span>
+            <span class="${stock.valuationOK?'pass':''}" title="Valuation OK">💰</span>
+        </span>`;
 
-                html += `<tr>
-                    <td>${stock.name}</td>
-                    <td>${stock.ticker}</td>
-                    <td class="price">₹${price ? price.toFixed(2) : "--"}</td>
-                    <td class="change ${changeClass}">${changePercent ? changeSign + changePercent.toFixed(2) + "%" : "--"}</td>
-                    <td>${marketCapCr !== "--" ? "₹" + marketCapCr + " Cr" : "--"}</td>
-                    <td>${pe !== "--" ? pe + "x" : "--"}</td>
-                    <td>${stock.roce}%</td>
-                    <td>${stock.de}</td>
-                    <td><span class="status-badge ${statusClass[stock.status]}">${statusLabel[stock.status]}</span></td>
-                </tr>`;
-            });
+        const chgClass = chgPct >= 0 ? "positive" : "negative";
+        const changeDisplay = chgPct ? (chgPct>0?"+":"")+chgPct.toFixed(2)+"%" : "--";
 
-            tbody.innerHTML = html;
-        }
+        html += `<tr>
+            <td><strong>${stock.name}</strong><br><small style="color:#888;">${stock.moat}</small></td>
+            <td class="price">${price ? "₹"+price.toFixed(2) : "--"}</td>
+            <td class="${chgClass}" style="color:${chgPct>=0?'var(--green)':'var(--red)'}">${changeDisplay}</td>
+            <td>${mcap ? "₹"+(mcap/10000000).toFixed(0)+" Cr" : "--"}</td>
+            <td>${pe ? pe.toFixed(1)+"x" : "--"}</td>
+            <td style="color:${stock.roce>=20?'var(--green)':'var(--red)'}">${stock.roce}%</td>
+            <td>${stock.de}</td>
+            <td>${stock.promoter}%</td>
+            <td>${checksHTML}</td>
+            <td><span class="badge ${statusClass[stock.status]}">${statusLabel[stock.status]}</span></td>
+        </tr>`;
+    });
+    tbody.innerHTML = html;
+}
 
-        // ==================== MAIN UPDATE LOOP ====================
-        async function updateDashboard() {
-            const statusDot = document.getElementById("statusDot");
-            const statusText = document.getElementById("statusText");
-            const lastRefresh = document.getElementById("lastRefresh");
-            const lastUpdatedText = document.getElementById("lastUpdatedText");
+async function refresh() {
+    document.getElementById("statusText").innerText = "Updating…";
+    const quotes = await fetchQuotes();
+    renderTable(quotes);
+    document.getElementById("statusText").innerText = quotes ? "Live" : "Stale";
+    document.getElementById("statusDot").className = "dot" + (quotes ? "" : " error");
+    document.getElementById("lastUpdate").innerText = new Date().toLocaleTimeString();
+}
 
-            statusDot.className = "indicator";
-            statusText.textContent = "Refreshing…";
-
-            const quotes = await fetchQuotes();
-            renderTable(quotes);
-
-            const now = new Date().toLocaleTimeString();
-            lastRefresh.textContent = now;
-            lastUpdatedText.textContent = `Last refreshed: ${now}`;
-
-            if (quotes) {
-                statusDot.className = "indicator";
-                statusText.textContent = "Live";
-            } else {
-                statusDot.className = "indicator error";
-                statusText.textContent = "Error – using last known data";
-            }
-        }
-
-        // Initial load and auto-refresh every 60 seconds
-        updateDashboard();
-        setInterval(updateDashboard, 60000);
-    </script>
+refresh();
+setInterval(refresh, 60000);
+</script>
 </body>
 </html>
